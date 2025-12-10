@@ -1,15 +1,16 @@
+export NONINTERACTIVE=1 
+
 apt-get update && apt-get upgrade
 apt-get install nano apache2-utils build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm \
               libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libpq-dev \
               �protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools
 
 # uv and cli tools
-export NONINTERACTIVE=1 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -sSL https://install.python-poetry.org | python3 -
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 rustup target add x86_64-unknown-linux-musl 
-NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install derailed/k9s/k9s
 
 # pip 
