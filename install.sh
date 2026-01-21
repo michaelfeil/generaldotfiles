@@ -14,7 +14,7 @@ rustup target add x86_64-unknown-linux-musl
 echo >> ~/.bashrc
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
+curl -fsSL https://opencode.ai/install | bash
 brew install derailed/k9s/k9s
 
 git config --global user.name michaelfeil
