@@ -1,9 +1,9 @@
-âexport NONINTERACTIVE=1 
+export NONINTERACTIVE=1 
 
 apt-get update
 apt-get install -y nano apache2-utils build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm \
               libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libpq-dev \
-              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools
+              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools bash-completion
 
 # uv and cli tools
 curl -LsSf https://astral.sh/uv/install.sh | sh
