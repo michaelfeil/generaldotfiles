@@ -3,7 +3,7 @@ export NONINTERACTIVE=1
 apt-get update
 apt-get install -y nano apache2-utils build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm \
               libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libpq-dev \
-              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools bash-completion
+              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools bash-completion npm
 
 # uv and cli tools
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -16,6 +16,8 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 curl -fsSL https://opencode.ai/install | bash
 brew install derailed/k9s/k9s
+npm install -g @openai/codex
+npm install -g @anthropic-ai/claude-code
 
 git config --global user.name michaelfeil
 git config --global user.email 63565275+michaelfeil@users.noreply.github.com
