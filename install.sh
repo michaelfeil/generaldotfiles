@@ -3,13 +3,18 @@ export NONINTERACTIVE=1
 apt-get update
 apt-get install -y nano apache2-utils build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm \
               libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libpq-dev \
-              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools bash-completion npm
+              protobuf-compiler libprotobuf-dev python3-dev curl file git procps musl-tools bash-completion
 
 # uv and cli tools
 curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -sSL https://install.python-poetry.org | python3 -
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-rustup target add x86_64-unknown-linux-musl 
+rustup target add x86_64-unknown-linux-musl
+
+# opencode-mcp 3.x requires Node.js 22+.
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get install -y nodejs
+node -e 'const major = Number(process.versions.node.split(".")[0]); if (major < 22) { console.error("Node.js 22+ is required for opencode-mcp"); process.exit(1); }'
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 echo >> ~/.bashrc
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc

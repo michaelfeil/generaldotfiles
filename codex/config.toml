@@ -2,7 +2,7 @@
 # Requires Node.js 22+ because opencode-mcp 3.x uses it.
 [mcp_servers.opencode]
 command = "npx"
-args = ["-y", "opencode-mcp"]
+args = ["-y", "opencode-mcp@3.1.0"]
 
 [mcp_servers.opencode.env]
 OPENCODE_AUTO_SERVE = "true"
