@@ -20,5 +20,8 @@ ln -f -s $DOTDIR/gitconfig ~/.gitconfig
 ln -f -s $DOTDIR/tmux.conf ~/.tmux.conf
 ln -f -s $DOTDIR/tmux-completion.bash ~/.tmux-completion.bash
 
+mkdir -p ~/.codex
+ln -f -s $DOTDIR/codex/config.toml ~/.codex/config.toml
+
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 popd
