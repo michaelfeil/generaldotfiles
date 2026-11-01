@@ -6,12 +6,16 @@ Use the `opencode` MCP tools for delegated work. Project-level `AGENTS.md` overr
 
 ### Models
 
-Use **Baseten** models. Pass `providerID: "baseten"` and the exact `modelID` from
-`opencode_provider_models`:
+Use **Baseten**. The MCP config pins `OPENCODE_DEFAULT_PROVIDER=baseten`, but
+opencode-mcp only applies defaults when both provider and model are supplied, so
+always pass both `providerID: "baseten"` and a `modelID` from
+`opencode_provider_models`.
 
-- Prefer `deepseek-ai/DeepSeek-V4.1-Flash-Fast` or `deepseek-ai/DeepSeek-V4.1-Flash-1017-Fast`.
-- Use `zai-org/GLM-5.3-Fast` as the fallback or a second opinion.
-- Do not fall back to free/default models unless Baseten is unavailable.
+- Prefer `deepseek-ai/DeepSeek-V4.1-Flash-1017-Fast` when it is available; it is
+  a good default.
+- Otherwise choose any available Baseten model, such as
+  `deepseek-ai/DeepSeek-V4.1-Flash-Fast` or `zai-org/GLM-5.3-Fast`.
+- Do not fall back to non-Baseten models unless no Baseten model is available.
 
 ### Start
 

@@ -7,4 +7,3 @@ args = ["-y", "opencode-mcp@3.1.0"]
 [mcp_servers.opencode.env]
 OPENCODE_AUTO_SERVE = "true"
 OPENCODE_DEFAULT_PROVIDER = "baseten"
-OPENCODE_DEFAULT_MODEL = "deepseek-ai/DeepSeek-V4.1-Flash-Fast"
