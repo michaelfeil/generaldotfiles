@@ -1,52 +1,75 @@
 # General dotfiles
 
-Personal Bash, Vim, tmux, Git, Codex, and OpenCode configuration.
+Bash, Vim, Git, tmux, Codex, and OpenCode settings for development machines.
 
-## What bootstrap.sh installs
+## Install dotfiles
 
-`bootstrap.sh` is the user-level dotfiles installer. It:
-
-- replaces `~/.me` with a copy of this repository;
-- writes `~/.my_bashrc` from `into_bashrc/*` and sources it from `~/.bashrc`;
-- symlinks `vimrc`, `gitconfig`, `tmux.conf`, and `tmux-completion.bash`;
-- symlinks `codex/config.toml` and `codex/AGENTS.md` into `~/.codex`;
-- symlinks `opencode/opencode.json` to
-  `${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.json`;
-- clones tmux plugin manager into `~/.tmux/plugins/tpm`.
-
-It does not install packages, create API keys, or log in to services. Existing
-files at the symlink destinations are replaced; back up your own configs first.
-
-## bootstrap.sh vs install.sh
-
-- `bootstrap.sh` is the normal, user-level setup. It needs no root access and
-  only clones tpm from the network.
-- `install.sh` is opinionated Linux provisioning: it uses apt/root, installs a
-  full toolchain, configures Git, installs the VS Code CLI, logs in to a tunnel,
-  and starts a tmux session. Run it only on a host you control and expect
-  changes to the live environment.
-
-## Prerequisites
-
-- Node.js 22+ for `opencode-mcp` 3.x; `npm`/`npx` must be available.
-- `opencode` and `codex` executables on `PATH`.
-- A Baseten API key, supplied through `BASETEN_API_KEY`.
-- Network access to GitHub, npm, and Baseten for installation and model calls.
-
-## Quick setup
+The default bootstrap provisions an Ubuntu/Debian development machine, including
+OpenCode and Paseo. Run as root or as a user with sudo access. Requires Bash and
+Git to start. Keep the checkout: installed files link back to it, and
+aliases such as `editbash` edit the tracked files directly.
 
 ```bash
 git clone https://github.com/michaelfeil/generaldotfiles.git
 cd generaldotfiles
-./bootstrap.sh
+bash bootstrap.sh
+source ~/.bashrc
+```
 
+`bootstrap.sh` links the checkout at `~/.me`, generates `~/.my_bashrc`, and adds
+one source line to `~/.bashrc`. It then runs `install.sh` automatically and installs
+TPM if absent. It installs links for Vim and tmux, and adds a Git
+include to your existing `~/.gitconfig`, preserving your Git identity and other
+settings. Bootstrap also links `codex/config.toml` and `codex/AGENTS.md` into
+`~/.codex`, and `opencode/opencode.json` into
+`${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.json`.
+Included settings take precedence over earlier settings with the same
+key; put any overrides after the include. The installer supplies Michael's Git
+identity only if one is not already configured.
+
+Existing files or directories that need replacement are moved to a printed
+`~/.dotfiles-backup.*` directory. Repeating setup from the same checkout does not
+duplicate source lines or Git includes. Old installations with a copied `~/.me`
+directory are backed up too; reconcile any local edits with the checkout.
+
+For dotfiles only (including on macOS), skip provisioning. To also avoid the TPM
+download for offline setup, use:
+
+```bash
+bash bootstrap.sh --skip-install --skip-tpm
+```
+
+The shell settings are for interactive Bash. Configure `.bashrc` loading in your
+login profile if your terminal starts a login shell. Optional aliases require the
+corresponding tools (for example kubectl, Docker, fzf, or Poetry).
+
+## Provision a development server
+
+`bootstrap.sh` runs `install.sh` by default. You can also run `bash install.sh`
+directly. It installs system dependencies, Node LTS under `~/.local`, OpenCode,
+Paseo (`@getpaseo/cli`), Codex, Claude Code, uv, Ruff, Poetry, Rust, and k9s.
+The installer checks that Node.js is 22+ for `opencode-mcp` 3.x.
+`~/.local/bin` and `~/.opencode/bin` are added to Bash's
+PATH. Bootstrap stops if provisioning fails.
+
+Install methods: [OpenCode](https://opencode.ai/docs/),
+[Paseo](https://paseo.sh/docs), [Node via n](https://github.com/tj/n), and
+[k9s Debian package](https://github.com/derailed/k9s#installation).
+
+After setup, run `opencode` to authenticate your provider, then `paseo` to start
+its daemon and set up pairing. These interactive steps are separate from install.
+
+VS Code CLI installation, tunnel login, and tunnel startup are handled manually.
+Neither bootstrap nor install performs tunnel setup. The standalone
+`tunnel_code.sh` and `kill_vscode.sh` helpers remain available for manual use.
+
+## Baseten credentials
+
+```bash
 export BASETEN_API_KEY="<your-baseten-api-key>"
 codex
 ```
 
-For an existing host with Node.js 22+, install missing CLIs with
-`npm install -g @openai/codex` and the [OpenCode installer](https://opencode.ai/docs/).
-`install.sh` is optional full Linux provisioning, not a prerequisite for bootstrap.
 After changing environment variables, restart the Codex process or app so its MCP
 child processes inherit them. For a desktop app, configure the key in its launch
 environment or secret integration; exporting it in an unrelated terminal is not
@@ -56,6 +79,18 @@ Set `BASETEN_API_KEY` to a real value only in your shell or secret manager. The
 placeholder above contains no secret. Codex inherits the exported variable from
 its parent environment, and the MCP/OpenCode child processes can use it. Do not
 commit keys to this repository.
+
+## Verify changes
+
+```bash
+bash tests/bootstrap.sh
+bash tests/install.sh
+```
+
+The checks use temporary home directories, disable TPM downloads, and stub
+external installation commands. They verify that default bootstrap invokes the
+installer, installs the requested agent packages, and propagates failures. They
+do not install packages or modify your real shell settings.
 
 ## OpenCode permissions
 

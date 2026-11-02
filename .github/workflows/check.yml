@@ -1,0 +1,16 @@
+name: Check dotfiles
+on: [push, pull_request]
+jobs:
+  bootstrap:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Bash syntax
+        run: bash -n bootstrap.sh && bash -n install.sh && bash -n tests/bootstrap.sh && bash -n tests/install.sh
+      - name: Verify bootstrap in temporary homes
+        run: bash tests/bootstrap.sh
+      - name: Verify installer commands and error handling
+        run: bash tests/install.sh
