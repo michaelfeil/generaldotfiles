@@ -23,6 +23,8 @@ export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 export N_PREFIX="$HOME/.local"
 curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n | bash -s -- install lts
 hash -r
+# opencode-mcp 3.x requires Node.js 22+.
+node -e 'const major = Number(process.versions.node.split(".")[0]); if (major < 22) { console.error("Node.js 22+ is required for opencode-mcp"); process.exit(1); }'
 
 # Agent tools. OpenCode is the provider CLI used by Paseo.
 curl -fsSL https://opencode.ai/install | bash
@@ -35,7 +37,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -sSL https://install.python-poetry.org | python3 -
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
-rustup target add x86_64-unknown-linux-musl 
+rustup target add x86_64-unknown-linux-musl
 # Use the upstream Debian package instead of requiring Homebrew as root.
 arch="$(dpkg --print-architecture)"
 work_dir="$(mktemp -d)"

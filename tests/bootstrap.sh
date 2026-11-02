@@ -5,6 +5,7 @@ repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 test_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-test.XXXXXXXX")"
 trap 'rm -rf -- "$test_dir"' EXIT
 export HOME="$test_dir/home with spaces"
+unset XDG_CONFIG_HOME
 export GIT_CONFIG_NOSYSTEM=1
 export GIT_CONFIG_GLOBAL="$HOME/.gitconfig"
 mkdir -p "$HOME"
@@ -16,6 +17,9 @@ backup_count() { find "$HOME" -maxdepth 1 -name '.dotfiles-backup.*' | wc -l | t
 # Fresh install and loading the generated file in noninteractive scripts.
 run_bootstrap
 [[ -L "$HOME/.me" && -L "$HOME/.vimrc" ]] || fail 'missing links'
+[[ -L "$HOME/.codex/config.toml" && -L "$HOME/.codex/AGENTS.md" ]] || fail 'missing Codex config'
+[[ -L "$HOME/.config/opencode/opencode.json" ]] || fail 'missing OpenCode config'
+cmp "$repo_dir/opencode/opencode.json" "$HOME/.config/opencode/opencode.json"
 [[ "$(git config --includes --global alias.co)" == checkout ]] || fail 'Git include not loaded'
 bash -c 'source "$HOME/.my_bashrc"; [[ -z ${PROMPT_COMMAND+x} ]]'
 cp "$HOME/.bashrc" "$test_dir/bashrc"
@@ -68,7 +72,7 @@ run_bootstrap
 export HOME="$test_dir/in-place"
 export GIT_CONFIG_GLOBAL="$HOME/.gitconfig"
 mkdir -p "$HOME/.me"
-cp -R "$repo_dir/into_bashrc" "$HOME/.me/"
+cp -R "$repo_dir/into_bashrc" "$repo_dir/codex" "$repo_dir/opencode" "$HOME/.me/"
 cp "$repo_dir/bootstrap.sh" "$repo_dir/gitconfig" "$repo_dir/vimrc" \
   "$repo_dir/tmux.conf" "$repo_dir/tmux-completion.bash" "$HOME/.me/"
 bash "$HOME/.me/bootstrap.sh" --skip-install --skip-tpm
@@ -91,6 +95,19 @@ if INSTALL_EXIT_CODE=17 bash "$HOME/.me/bootstrap.sh" --skip-tpm; then
 else
   [[ $? -eq 17 ]] || fail 'bootstrap lost installer exit code'
 fi
+
+# A custom config directory preserves existing settings and is idempotent.
+export XDG_CONFIG_HOME="$HOME/custom config"
+mkdir -p "$XDG_CONFIG_HOME/opencode"
+printf '{"permission":"ask"}\n' > "$XDG_CONFIG_HOME/opencode/opencode.json"
+run_bootstrap
+[[ -L "$XDG_CONFIG_HOME/opencode/opencode.json" ]] || fail 'missing XDG config link'
+for backup in "$HOME"/.dotfiles-backup.*; do
+  grep -qF '"permission":"ask"' "$backup/opencode.json" || fail 'lost OpenCode config'
+done
+count="$(backup_count)"
+run_bootstrap
+[[ "$(backup_count)" == "$count" ]] || fail 'XDG rerun made unnecessary backups'
 
 # Invalid arguments fail before any mutation.
 if bash "$repo_dir/bootstrap.sh" --unknown > /dev/null 2>&1; then

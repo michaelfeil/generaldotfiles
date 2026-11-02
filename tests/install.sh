@@ -21,10 +21,11 @@ case "$name" in
   sudo) exec "$@" ;;
   dpkg) echo amd64 ;;
   npm) exit "${NPM_EXIT_CODE:-0}" ;;
+  node) exit "${NODE_EXIT_CODE:-0}" ;;
 esac
 MOCK
 chmod +x "$test_dir/bin/mock"
-for cmd in apt-get curl npm rustup uv python3 dpkg sudo code tmux; do
+for cmd in apt-get curl npm node rustup uv python3 dpkg sudo code tmux; do
   ln -s mock "$test_dir/bin/$cmd"
 done
 export PATH="$test_dir/bin:$PATH"
@@ -43,5 +44,10 @@ if NPM_EXIT_CODE=23 bash "$repo_dir/install.sh"; then
   echo 'FAIL: installer ignored npm failure' >&2; exit 1
 else
   [[ $? -eq 23 ]]
+fi
+if NODE_EXIT_CODE=25 bash "$repo_dir/install.sh"; then
+  echo 'FAIL: installer ignored Node version check failure' >&2; exit 1
+else
+  [[ $? -eq 25 ]]
 fi
 echo 'All installer checks passed (external commands mocked).'

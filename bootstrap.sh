@@ -85,6 +85,12 @@ link_file "$dotdir/vimrc" "$HOME/.vimrc"
 link_file "$dotdir/tmux.conf" "$HOME/.tmux.conf"
 link_file "$dotdir/tmux-completion.bash" "$HOME/.tmux-completion.bash"
 
+# Agent configuration follows the same backup/idempotence rules as dotfiles.
+mkdir -p "$HOME/.codex" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+link_file "$dotdir/codex/config.toml" "$HOME/.codex/config.toml"
+link_file "$dotdir/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
+link_file "$dotdir/opencode/opencode.json" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.json"
+
 # Keep identity and machine-specific settings in the user's file.
 if ! git config --file "$HOME/.gitconfig" --get-all include.path 2>/dev/null |
     grep -qxF "$dotdir/gitconfig"; then
