@@ -24,5 +24,8 @@ mkdir -p ~/.codex
 ln -f -s $DOTDIR/codex/config.toml ~/.codex/config.toml
 ln -f -s $DOTDIR/codex/AGENTS.md ~/.codex/AGENTS.md
 
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+ln -f -s "$DOTDIR/opencode/opencode.json" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.json"
+
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 popd
