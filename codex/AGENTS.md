@@ -1,5 +1,9 @@
 # Global Codex guidance
 
+## GitHub access
+
+Use the GitHub CLI (`gh`) instead of the GitHub connector for GitHub operations.
+
 ## Delegation contract
 
 Every OpenCode delegation must include:
